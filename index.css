@@ -280,3 +280,70 @@
         font-size: 0.85rem;
       }
     }
+
+     .team-description {
+      background: linear-gradient(135deg, #8B0000, #DC143C);
+      margin: 2rem 0;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 8px 32px rgba(139, 0, 0, 0.3);
+      color: white;
+      text-align: center;
+    }
+
+    .team-description h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      letter-spacing: 1px;
+    }
+
+    .team-info {
+      text-align: left;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .team-info p {
+      margin: 0.8rem 0;
+      font-size: 1rem;
+      line-height: 1.4;
+      padding: 0.5rem 0;
+      border-left: 3px solid rgba(255, 255, 255, 0.3);
+      padding-left: 1rem;
+    }
+
+    .rank-structure, .operations, .culture, .weekly-goals {
+      margin: 1.5rem 0;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .rank-structure h3, .operations h3, .culture h3 {
+      color: #FFD700;
+      margin-bottom: 0.8rem;
+      font-size: 1.2rem;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    }
+
+    .team-info strong {
+      color: #FFD700;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    }
+
+    @media (max-width: 768px) {
+      .team-description {
+        margin: 1rem 0;
+        padding: 1.5rem;
+      }
+      
+      .team-description h2 {
+        font-size: 1.4rem;
+      }
+      
+      .team-info p {
+        font-size: 0.9rem;
+      }
+    }
