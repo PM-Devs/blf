@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BloodLine DCGT Tracker</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0c0c0c 0%, #1a0a0a 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: linear-gradient(90deg, #ff0000, #cc0000);
+      border-radius: 2px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ff4444, #cc0000);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      color: #888;
+      font-size: 1.1rem;
+      font-weight: 400;
+    }
+
+    .form-container {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 2.5rem;
+      margin-bottom: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .form-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 68, 68, 0.5), transparent);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      position: relative;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: #ffffff;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #ff4444;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.1);
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: #666;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, #ff4444, #cc0000);
+      border: none;
+      border-radius: 12px;
+      padding: 1rem 2rem;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      min-width: 150px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 68, 68, 0.3);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .records-container {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .chart-container {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 3rem;
+    }
+
+    .records-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .records-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    th {
+      background: rgba(255, 68, 68, 0.1);
+      color: #ff4444;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    td {
+      color: #cccccc;
+      font-size: 0.95rem;
+    }
+
+    tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .net-positive {
+      color: #4ade80;
+      font-weight: 600;
+    }
+
+    .net-negative {
+      color: #f87171;
+      font-weight: 600;
+    }
+
+    .net-zero {
+      color: #94a3b8;
+      font-weight: 600;
+    }
+
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem;
+      color: #666;
+    }
+
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 2px solid rgba(255, 68, 68, 0.2);
+      border-top: 2px solid #ff4444;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 1rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .success-message {
+      background: rgba(74, 222, 128, 0.1);
+      border: 1px solid rgba(74, 222, 128, 0.2);
+      color: #4ade80;
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .form-container {
+        padding: 1.5rem;
+      }
+      
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      th, td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🩸 BloodLine DCGT</h1>
+      <p class="subtitle">Digital Coin Gift Tracker</p>
+    </div>
+
+    <div class="form-container">
+      <div class="success-message" id="success-message">
+        ✅ Record submitted successfully!
+      </div>
+      
+      <form id="dcgt-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <input type="date" id="date" required />
+          </div>
+          <div class="form-group">
+            <input type="text" id="eventName" placeholder="Event Name or Link" required />
+          </div>
+          <div class="form-group">
+            <input type="text" id="organizer" placeholder="Organizer" required />
+          </div>
+          <div class="form-group">
+            <input type="text" id="gifter" placeholder="Gifter" required />
+          </div>
+          <div class="form-group">
+            <input type="number" id="coinsOut" placeholder="Coins Gifted (Out)" required min="0" />
+          </div>
+          <div class="form-group">
+            <input type="number" id="coinsIn" placeholder="Coins Attracted (In)" required min="0" />
+          </div>
+          <div class="form-group">
+            <input type="text" id="supportTeam" placeholder="Support Team" />
+          </div>
+          <div class="form-group full-width">
+            <textarea id="conversionNotes" placeholder="Conversion Notes" rows="3"></textarea>
+          </div>
+        </div>
+        <button type="submit" class="submit-btn">Submit Record</button>
+      </form>
+    </div>
+
+    <div class="chart-container">
+      <div class="records-header">
+        <h2 class="records-title">Performance Analytics</h2>
+      </div>
+      <div style="padding: 2rem;">
+        <canvas id="performanceChart" width="400" height="200"></canvas>
+      </div>
+    </div>
+
+    <div class="records-container">
+      <div class="records-header">
+        <h2 class="records-title">Transaction Records</h2>
+      </div>
+      
+      <div class="table-wrapper">
+        <table id="records">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Event</th>
+              <th>Organizer</th>
+              <th>Gifter</th>
+              <th>Out</th>
+              <th>In</th>
+              <th>Net</th>
+              <th>Support</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="9" class="loading">
+                <div class="spinner"></div>
+                Loading records...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <script>
+    const form = document.getElementById('dcgt-form');
+    const tbody = document.querySelector('#records tbody');
+    const successMessage = document.getElementById('success-message');
+    let chart = null;
+
+    // Set today's date as default
+    document.getElementById('date').valueAsDate = new Date();
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      
+      const submitBtn = form.querySelector('.submit-btn');
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Submitting...';
+      submitBtn.disabled = true;
+
+      try {
+        const data = {
+          date: form.date.value,
+          eventName: form.eventName.value,
+          organizer: form.organizer.value,
+          gifter: form.gifter.value,
+          coinsOut: +form.coinsOut.value,
+          coinsIn: +form.coinsIn.value,
+          net: +form.coinsIn.value - +form.coinsOut.value,
+          supportTeam: form.supportTeam.value,
+          conversionNotes: form.conversionNotes.value
+        };
+
+        const response = await fetch('http://localhost:8000/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          form.reset();
+          document.getElementById('date').valueAsDate = new Date(); // Reset date to today
+          showSuccessMessage();
+          await loadData();
+        } else {
+          throw new Error('Failed to submit record');
+        }
+      } catch (error) {
+        console.error('Error submitting record:', error);
+        alert('Failed to submit record. Please try again.');
+      } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+
+    function createChart(data) {
+      const ctx = document.getElementById('performanceChart').getContext('2d');
+      
+      // Destroy existing chart if it exists
+      if (chart) {
+        chart.destroy();
+      }
+
+      // Prepare data for the last 10 records or all if less than 10
+      const recentData = data.slice(0, 10).reverse();
+      const labels = recentData.map(r => `${r.eventName.substring(0, 15)}...`);
+      const coinsOut = recentData.map(r => r.coinsOut);
+      const coinsIn = recentData.map(r => r.coinsIn);
+      const netValues = recentData.map(r => r.coinsIn - r.coinsOut);
+
+      chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Coins Out (Gifted)',
+              data: coinsOut,
+              backgroundColor: 'rgba(248, 113, 113, 0.8)',
+              borderColor: 'rgba(248, 113, 113, 1)',
+              borderWidth: 1
+            },
+            {
+              label: 'Coins In (Attracted)',
+              data: coinsIn,
+              backgroundColor: 'rgba(74, 222, 128, 0.8)',
+              borderColor: 'rgba(74, 222, 128, 1)',
+              borderWidth: 1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                color: '#ffffff',
+                font: {
+                  size: 12
+                }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                afterLabel: function(context) {
+                  const index = context.dataIndex;
+                  const net = netValues[index];
+                  return `Net: ${net >= 0 ? '+' : ''}${net.toLocaleString()} coins`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: {
+                color: '#cccccc',
+                font: {
+                  size: 10
+                }
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              }
+            },
+            y: {
+              ticks: {
+                color: '#cccccc',
+                callback: function(value) {
+                  return value.toLocaleString();
+                }
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function showSuccessMessage() {
+      successMessage.style.display = 'block';
+      setTimeout(() => {
+        successMessage.style.display = 'none';
+      }, 3000);
+    }
+
+    function formatNet(coinsIn, coinsOut) {
+      const net = coinsIn - coinsOut;
+      if (net > 0) return `<span class="net-positive">+${net.toLocaleString()}</span>`;
+      if (net < 0) return `<span class="net-negative">${net.toLocaleString()}</span>`;
+      return `<span class="net-zero">${net.toLocaleString()}</span>`;
+    }
+
+    function formatDate(dateStr) {
+      try {
+        return new Date(dateStr).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        });
+      } catch {
+        return dateStr;
+      }
+    }
+
+    function truncateText(text, maxLength = 30) {
+      if (!text) return '';
+      return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    }
+
+    async function loadData() {
+      try {
+        const res = await fetch('http://localhost:8000/records');
+        const rows = await res.json();
+        
+        tbody.innerHTML = '';
+        
+        if (rows.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 2rem; color: #666;">No records found</td></tr>';
+          return;
+        }
+
+        rows.forEach(r => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${formatDate(r.date)}</td>
+            <td title="${r.eventName}">${truncateText(r.eventName, 25)}</td>
+            <td>${r.organizer}</td>
+            <td>${r.gifter}</td>
+            <td>${r.coinsOut.toLocaleString()}</td>
+            <td>${r.coinsIn.toLocaleString()}</td>
+            <td>${formatNet(r.coinsIn, r.coinsOut)}</td>
+            <td>${r.supportTeam || '-'}</td>
+            <td title="${r.conversionNotes}">${truncateText(r.conversionNotes, 40)}</td>
+          `;
+          tbody.appendChild(row);
+        });
+
+        // Create/update chart with the data
+        createChart(rows);
+      } catch (error) {
+        console.error('Error loading data:', error);
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 2rem; color: #f87171;">Failed to load records</td></tr>';
+      }
+    }
+
+    // Load data on page load
+    loadData();
+  </script>
+</body>
+</html>
