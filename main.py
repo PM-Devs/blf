@@ -109,7 +109,7 @@ async def analytics() -> Dict[str, Any]:
 # Serve the HTML file
 @app.get("/")
 async def read_index():
-    return FileResponse('index.html')
+    return "Hello world"
 
 # Add CORS middleware if needed for development
 from fastapi.middleware.cors import CORSMiddleware
